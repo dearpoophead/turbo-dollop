@@ -1,32 +1,48 @@
 const repeatSection = document.getElementById('repeatSection');
-const image2s = repeatSection.querySelectorAll('img');
 
-// Estimate height of a single image2 block
-let image2Height = 0;
+const IMAGE_SRC = 'infinitescroll.jpg';
+const NUM_CLONES = 10; // You can increase this for smoother loops
+let infinitescrollHeight = 0;
 
-// Calculate on load
+// Dynamically insert images
+function createinfinitescrollLoop() {
+  for (let i = 0; i < NUM_CLONES; i++) {
+    const img = document.createElement('img');
+    img.src = IMAGE_SRC;
+    img.alt = `Loop Image ${i + 1}`;
+    repeatSection.appendChild(img);
+
+    // Save height once (after first image loads)
+    if (i === 0) {
+      img.onload = () => {
+        infinitescrollHeight = img.offsetHeight;
+      };
+    }
+  }
+}
+
+// Setup scroll loop behavior
+function setupInfiniteScroll() {
+  window.addEventListener('scroll', () => {
+    const scrollY = window.scrollY;
+    const windowHeight = window.innerHeight;
+    const scrollHeight = document.body.scrollHeight;
+    const startOfLoop = repeatSection.offsetTop;
+
+    // If user nears the bottom of page, jump back to start of repeat section
+    if (scrollY + windowHeight >= scrollHeight - 5) {
+      window.scrollTo({ top: startOfLoop + 1 });
+    }
+
+    // Prevent scrolling too far back into image1
+    if (scrollY < startOfLoop - 5) {
+      window.scrollTo({ top: startOfLoop + infinitescrollHeight });
+    }
+  });
+}
+
+// Run everything
 window.addEventListener('load', () => {
-  if (image2s.length > 0) {
-    image2Height = image2s[0].offsetHeight;
-  }
-});
-
-// Scroll loop logic
-window.addEventListener('scroll', () => {
-  const scrollY = window.scrollY;
-  const windowHeight = window.innerHeight;
-  const scrollHeight = document.body.scrollHeight;
-
-  // Trigger scroll reset if user nears bottom of repeated section
-  if (scrollY + windowHeight >= scrollHeight - 5) {
-    // Scroll to the start of the repeat section (just after image1)
-    const offsetTop = repeatSection.offsetTop + 1;
-    window.scrollTo({ top: offsetTop });
-  }
-
-  // Optional: if user scrolls too far up, prevent looping back into image1
-  if (scrollY < repeatSection.offsetTop - 5) {
-    const reset = repeatSection.offsetTop + image2Height;
-    window.scrollTo({ top: reset });
-  }
+  createinfinitescrollLoop();
+  setupInfiniteScroll();
 });
