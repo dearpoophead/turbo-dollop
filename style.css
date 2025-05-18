@@ -4,12 +4,20 @@
   box-sizing: border-box;
 }
 
-body, html {
+html, body {
   height: 100%;
   overflow-y: scroll;
+  scroll-behavior: auto;
 }
 
-.image-container img {
+.image-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.image-top,
+.repeat-section img {
   width: 100%;
+  height: auto;
   display: block;
 }
