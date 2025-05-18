@@ -1,48 +1,40 @@
 const repeatSection = document.getElementById('repeatSection');
 
 const IMAGE_SRC = 'infinitescroll.jpg';
-const NUM_CLONES = 10; // You can increase this for smoother loops
-let image2Height = 0;
+const BATCH_SIZE = 5;      // How many to load each time
+const LOAD_THRESHOLD = 300; // Pixels from bottom before loading more
 
-// Dynamically insert images
-function createImage2Loop() {
-  for (let i = 0; i < NUM_CLONES; i++) {
+let loading = false;
+
+// Create a batch of images
+function loadMoreImages() {
+  for (let i = 0; i < BATCH_SIZE; i++) {
     const img = document.createElement('img');
     img.src = IMAGE_SRC;
-    img.alt = `Loop Image ${i + 1}`;
+    img.alt = 'Loop Image';
+    img.onload = () => {
+      loading = false;
+    };
     repeatSection.appendChild(img);
-
-    // Save height once (after first image loads)
-    if (i === 0) {
-      img.onload = () => {
-        image2Height = img.offsetHeight;
-      };
-    }
   }
 }
 
-// Setup scroll loop behavior
-function setupInfiniteScroll() {
+// Listen for scroll and load more when near the bottom
+function setupInfiniteLoader() {
   window.addEventListener('scroll', () => {
     const scrollY = window.scrollY;
     const windowHeight = window.innerHeight;
     const scrollHeight = document.body.scrollHeight;
-    const startOfLoop = repeatSection.offsetTop;
 
-    // If user nears the bottom of page, jump back to start of repeat section
-    if (scrollY + windowHeight >= scrollHeight - 5) {
-      window.scrollTo({ top: startOfLoop + 1 });
-    }
-
-    // Prevent scrolling too far back into image1
-    if (scrollY < startOfLoop - 5) {
-      window.scrollTo({ top: startOfLoop + image2Height });
+    if (!loading && scrollY + windowHeight > scrollHeight - LOAD_THRESHOLD) {
+      loading = true;
+      loadMoreImages();
     }
   });
 }
 
-// Run everything
+// Initial batch + setup
 window.addEventListener('load', () => {
-  createImage2Loop();
-  setupInfiniteScroll();
+  loadMoreImages(); // Load first batch
+  setupInfiniteLoader();
 });
