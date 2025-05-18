@@ -1,7 +1,7 @@
 const repeatSection = document.getElementById('repeatSection');
 
 const IMAGE_SRC = 'infinitescroll.jpg';
-const BATCH_SIZE = 5;      // How many to load each time
+const BATCH_SIZE = 1000;      // How many to load each time
 const LOAD_THRESHOLD = 300; // Pixels from bottom before loading more
 
 let loading = false;
