@@ -2,10 +2,10 @@ const repeatSection = document.getElementById('repeatSection');
 
 const IMAGE_SRC = 'infinitescroll.jpg';
 const NUM_CLONES = 10; // You can increase this for smoother loops
-let infinitescrollHeight = 0;
+let image2Height = 0;
 
 // Dynamically insert images
-function createinfinitescrollLoop() {
+function createImage2Loop() {
   for (let i = 0; i < NUM_CLONES; i++) {
     const img = document.createElement('img');
     img.src = IMAGE_SRC;
@@ -15,7 +15,7 @@ function createinfinitescrollLoop() {
     // Save height once (after first image loads)
     if (i === 0) {
       img.onload = () => {
-        infinitescrollHeight = img.offsetHeight;
+        image2Height = img.offsetHeight;
       };
     }
   }
@@ -36,13 +36,13 @@ function setupInfiniteScroll() {
 
     // Prevent scrolling too far back into image1
     if (scrollY < startOfLoop - 5) {
-      window.scrollTo({ top: startOfLoop + infinitescrollHeight });
+      window.scrollTo({ top: startOfLoop + image2Height });
     }
   });
 }
 
 // Run everything
 window.addEventListener('load', () => {
-  createinfinitescrollLoop();
+  createImage2Loop();
   setupInfiniteScroll();
 });
